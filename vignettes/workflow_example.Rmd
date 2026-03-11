@@ -1,0 +1,89 @@
+---
+title: "Introduction to ndbcTools"
+author: "NOAA Developer Demo"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ndbcTools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6
+)
+```
+
+# Overview
+
+The ndbcTools package provides a lightweight, demonstration-focused R interface for the National Data Buoy Center (NDBC). It simplifies the process of discovering stations, acquiring meteorological data, and generating standardized visualizations for rapid assessment of marine conditions.
+This vignette demonstrates a complete workflow: finding a station near a specific location, pulling its data, and visualizing the results.
+
+#Setup
+First, load the package. We will also use here for file path management in our plotting
+
+```{R}
+library(ndbcTools)
+```
+
+#Step 1: Find Closest Stations
+
+If you know your coordinates but not the specific NDBC station ID, you can use get_closest_buoys() to search for stations within a specified radius. Here, we look for the 3 closest stations within 50 kilometers of a coordinate pair near Narragansett, RI.
+
+```{R}
+possible_stations <- get_closest_buoys(
+  lat = 41.43, 
+  lon = -71.46, 
+  max_dist = 50, 
+  n = 3
+)
+
+# View the results
+print(possible_stations)
+```
+
+#Step 2: Select a Station and View Metadata
+From our list of possible stations, we will programmatically select the closest one. Once we have our target station_id, we can fetch its metadata to see what variables and date ranges are available.
+```{R}
+# Select the station ID with the minimum distance
+this_station <- possible_stations$station_id[which.min(possible_stations$distance_km)]
+
+# Retrieve station metadata
+station_meta <- get_station_metadata(station_id = this_station)
+print(station_meta)
+```
+
+#Step 3: Pull Buoy Data
+Now that we have our station_id and know what variables are available, we can pull the raw data. We use pull_buoy_data() to fetch Water Temperature (WTMP) and Wind Speed (WSPD) for a specified date range.
+```{R}
+buoy_dat <- pull_buoy_data(
+  station_id = this_station,
+  start_date = '2026-01-01',
+  end_date = '2026-12-31',
+  var_name = c('WTMP', 'WSPD')
+)
+
+head(buoy_dat)
+```
+
+#Step 4: Plot Buoy Data
+Finally, we can visualize the retrieved data. The plot_buoy_data() function automatically handles faceting by variable and can perform temporal aggregation.In this example, we aggregate the data by day (which will calculate the daily mean and automatically display standard error shading) and save the plot to our local directory.
+
+```{R}
+# Create the plot and save it to the project root
+my_plot <- plot_buoy_data(
+  station_id = this_station,
+  start_date = '2026-01-01',
+  end_date = '2026-12-31',
+  var_name = c('WTMP', 'WSPD'),
+  agg_time = 'day',
+  write = TRUE,
+  file_name = here::here('test_plot.png')
+)
+
+# Display the plot in the viewer
+my_plot
+```

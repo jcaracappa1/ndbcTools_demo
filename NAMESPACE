@@ -2,4 +2,5 @@
 
 export(get_closest_buoys)
 export(get_station_metadata)
+export(plot_buoy_data)
 export(pull_buoy_data)
