@@ -7,7 +7,7 @@
 pull_buoy_data(station_id, start_date = NULL, end_date = NULL, var_name = NULL)
 }
 \arguments{
-\item{station_id}{A string representing the 5-character NDBC station identifier (e.g., "44013").}
+\item{station_id}{A string representing the 5-character NDBC station identifier (e.g., "44013" or "BLUV2").}
 
 \item{start_date}{A string or Date object for the start of the filter range (e.g., "2023-01-01"). Optional.}
 
@@ -20,17 +20,21 @@ A tidy tibble (data frame) in long format containing \code{date}, \code{time}, \
 }
 \description{
 Retrieves and parses standard meteorological data for a specific
-National Data Buoy Center (NDBC) station. The function downloads the raw text
+National Data Buoy Center (NDBC) station. The function validates the station
+against the NDBC index (resolving case sensitivity), downloads the raw text
 data, formats the timestamps, and pivots the results into a tidy long format.
+}
+\details{
+Pull NDBC Buoy Data
 }
 \examples{
 \dontrun{
 # Pull all available variables for station 44013
 pull_buoy_data("44013")
 
-# Pull specific variables within a date range
+# Case-insensitive ID pull for specific variables within a date range
 pull_buoy_data(
-  station_id = "44013",
+  station_id = "bluv2",
   start_date = Sys.Date() - 7,
   end_date = Sys.Date(),
   var_name = c("WSPD", "WVHT")

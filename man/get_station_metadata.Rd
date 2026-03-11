@@ -10,7 +10,7 @@ get_station_metadata(station_id)
 \item{station_id}{A string representing the 5-character NDBC station identifier (e.g., "44013").}
 }
 \value{
-A tibble containing \code{varname}, \code{min_date}, and \code{max_date}.
+A tibble containing \code{varname}, \code{description}, \code{min_date}, and \code{max_date}.
 }
 \description{
 Retrieves the available variables for a specific NDBC buoy station
