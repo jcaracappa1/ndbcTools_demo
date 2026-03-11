@@ -1,12 +1,12 @@
 ---
-title: "Introduction to ndbcTools"
-author: "NOAA Developer Demo"
+title: "getting-started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to ndbcTools}
+  %\VignetteIndexEntry{getting-started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
